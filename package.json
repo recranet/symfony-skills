@@ -1,0 +1,25 @@
+{
+  "name": "@recranet/symfony-skills",
+  "version": "0.1.0",
+  "description": "Claude Code skill that steers toward Symfony 7.4+ first-party components instead of vendor-specific libraries.",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "claude-skills",
+    "skills",
+    "symfony",
+    "symfony-7"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/recranet/symfony-skills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/recranet/symfony-skills/issues"
+  },
+  "homepage": "https://github.com/recranet/symfony-skills#readme",
+  "files": [
+    "skills/"
+  ]
+}
