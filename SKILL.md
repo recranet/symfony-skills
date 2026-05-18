@@ -1,6 +1,6 @@
 ---
 name: symfony
-description: Use when working on any task in a Symfony 7.4+ project — adding routes/controllers, Doctrine entities and migrations, console commands, event listeners, security/firewalls, forms, Twig templates, tests, framework configuration, mailer/messenger/notifier, caching/locking/rate-limiting, or anything else. Detection: composer.json requires symfony/framework-bundle ^7.4, or repo has bin/console and config/packages/. Covers idiomatic Symfony patterns (attributes, autowiring, make:* recipes), first-party components preferred over vendor libs (symfony/lock not Redis SETNX, symfony/http-client not Guzzle, symfony/mailer not PHPMailer, symfony/uid not ramsey/uuid, symfony/html-sanitizer not HTMLPurifier, symfony/process not exec, etc.), and the full framework configuration reference. When the project has ddev (.ddev/config.yaml), prefix shell commands with `ddev`.
+description: Idiomatic patterns and first-party components for Symfony 7.4+ projects - routing, Doctrine, security, forms, testing, and all core tasks
 ---
 
 # Symfony 7.4+ Skill

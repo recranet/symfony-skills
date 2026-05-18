@@ -6,12 +6,11 @@ and reaching for first-party components instead of vendor libraries.
 
 ## What's included
 
-- **`skills/symfony/SKILL.md`** — always-loaded entry point. Tooling
-  conventions (ddev when present), project layout summary, a task index
-  pointing at the right reference for each common job, and a catalog of
-  ~40 components grouped by problem area.
+- **`SKILL.md`** — always-loaded entry point. Tooling conventions (ddev when
+  present), project layout summary, a task index pointing at the right reference
+  for each common job, and a catalog of ~40 components grouped by problem area.
 
-- **`skills/symfony/references/`** — on-demand reference docs:
+- **`references/`** — on-demand reference docs:
 
   **Task-oriented** (broad Symfony work):
   - `project-layout.md` — directory layout, tooling, autowiring conventions
@@ -61,8 +60,8 @@ git clone https://github.com/recranet/symfony-skills.git
 npx skills install ./symfony-skills
 ```
 
-This copies `skills/symfony/` into `~/.claude/skills/symfony/`. Restart your
-Claude Code session (or `/skill reload`) to pick it up.
+This copies the skill into your local agent environment. Restart Claude Code
+or run `/skill reload` to pick it up.
 
 ## Verifying it's active
 
@@ -82,11 +81,10 @@ Open a Symfony 7.4 project in Claude Code and try one of these:
 
 To add or improve a reference:
 
-1. If a new task/component, add a row to `skills/symfony/SKILL.md` (task
-   index or component catalog).
-2. Create `skills/symfony/references/<name>.md` following the existing
-   template (when to use / what you need / minimal example / common
-   patterns / gotchas / docs links).
+1. If a new task/component, add a row to `SKILL.md` (task index or component
+   catalog).
+2. Create `references/<name>.md` following the existing template (when to use /
+   what you need / minimal example / common patterns / gotchas / docs links).
 3. Open a PR.
 
 To update existing guidance, edit the reference file directly.
