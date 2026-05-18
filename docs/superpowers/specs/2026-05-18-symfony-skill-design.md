@@ -1,46 +1,72 @@
 # Symfony Skill — Design
 
 Date: 2026-05-18
-Status: Approved, ready for implementation
+Status: Approved (initial scope), expanded same-day for broader coverage
 
 ## Purpose
 
-Provide a Claude Code skill that, when active in a Symfony 7.4+ project, steers
-Claude toward Symfony's first-party components instead of vendor-specific
-libraries. The skill is distributed as an Anthropic-format skill (`SKILL.md` +
+Provide a Claude Code skill that helps with **any task in a Symfony 7.4+
+project** — not only steering toward first-party components, but also
+modelling how to write idiomatic Symfony code across controllers, doctrine,
+security, forms, console commands, events, testing, and configuration.
+
+The skill is distributed as an Anthropic-format skill (`SKILL.md` +
 supporting files) installable via `npx skills`.
 
-The motivating example: when a developer needs a lock, Claude should reach for
-`symfony/lock` rather than writing a Redis `SETNX` wrapper or pulling in a
-third-party lock library. The same applies to HTTP clients (use
-`symfony/http-client`, not Guzzle), mail (use `symfony/mailer`, not PHPMailer),
-queues (use `symfony/messenger`, not direct AMQP/SQS SDKs), and so on.
+Two pillars:
+
+1. **Idiomatic Symfony.** When a task can be done with stock Symfony
+   conventions (`#[Route]`, `#[AsCommand]`, autowiring, attributes,
+   `make:*` recipes), use them — don't reinvent.
+2. **First-party components first.** Where a third-party library is a
+   common reach (Guzzle, PHPMailer, php-amqplib, ramsey/uuid,
+   HTMLPurifier, direct Redis), prefer the matching Symfony component.
 
 ## Activation
 
-`SKILL.md` frontmatter `description` field triggers the skill when Claude
-detects a Symfony 7.4+ project. Signals:
+`SKILL.md` frontmatter `description` triggers the skill when Claude detects
+a Symfony 7.4+ project. Signals:
 
 - `composer.json` requires `symfony/framework-bundle` at ^7.4 or higher
 - Repo contains `bin/console`
 - Repo contains `config/packages/`
 
-The description explicitly lists the most-replaced libraries (Guzzle,
-PHPMailer, direct Redis, etc.) so the skill is selected when Claude is about
-to write code in those problem domains.
+The description names the most-common task surface areas (routing, doctrine,
+security, mailer, messenger, console, testing, framework config) and the
+most-replaced third-party libraries, so the skill selects on either type of
+work.
+
+## Tooling assumption
+
+- If the project has a `.ddev/config.yaml`, prefix shell commands with
+  `ddev` (e.g., `ddev php bin/console make:migration`, `ddev composer
+  require ...`).
+- If ddev is not present, fall back to the host environment. The Symfony
+  CLI (`symfony console …`) is acceptable when available; otherwise plain
+  `php bin/console …` / `composer …`.
 
 ## Structure
 
 ```
-symfony-skills/                      # this repo
-├── README.md                        # what this repo is, how to install
+symfony-skills/
+├── README.md
 ├── LICENSE
 ├── .gitignore
-├── package.json                     # name, version, repository metadata
+├── package.json
 ├── skills/
-│   └── symfony/                     # the installable skill
-│       ├── SKILL.md                 # frontmatter + catalog (always loaded)
-│       └── references/              # per-component on-demand reference docs
+│   └── symfony/
+│       ├── SKILL.md                              # always-loaded
+│       └── references/                           # on-demand
+│           # Task-oriented references
+│           ├── project-layout.md
+│           ├── controllers-and-routing.md
+│           ├── doctrine.md
+│           ├── security.md
+│           ├── console-commands.md
+│           ├── events.md
+│           ├── testing.md
+│           ├── framework-config.md
+│           # Component-oriented references
 │           ├── lock.md
 │           ├── http-client.md
 │           ├── cache.md
@@ -60,141 +86,101 @@ symfony-skills/                      # this repo
 │           ├── clock.md
 │           └── html-sanitizer.md
 └── docs/superpowers/specs/
-    └── 2026-05-18-symfony-skill-design.md   # this file
+    └── 2026-05-18-symfony-skill-design.md
 ```
 
 ## `SKILL.md` body
 
-Two parts:
+Four sections:
 
-### 1. Decision rule (top of file)
+### 1. Working in a Symfony project
 
-A short, imperative section telling Claude that in this project Symfony
-components are preferred over vendor-specific equivalents when both fit. Lists
-the heuristic: before adding a `composer require` for a third-party library,
-check the catalog below — if a Symfony component covers the use case, use it.
+- Project layout (`src/`, `config/`, `templates/`, `migrations/`, `bin/`,
+  `public/`, `var/`).
+- Tooling: `bin/console`, Flex, env vars, `composer` aliases, ddev wrapping
+  when present.
+- Convention defaults: autowire on, autoconfigure on, services private,
+  PSR-4 `App\` autoload.
 
-### 2. Component catalog (scannable table)
+### 2. Common tasks
 
-One table grouped by problem area. Each row contains:
+A scannable list with one-line "use X" guidance and a link to either a
+reference file or the canonical 7.4 docs:
 
-| Component | Replaces | Docs | Reference file |
-|-----------|----------|------|----------------|
+- Add a route / controller → `controllers-and-routing.md`
+- Add an entity / migration → `doctrine.md`
+- Add a console command → `console-commands.md`
+- React to an event → `events.md`
+- Add validation → `references/validator.md`
+- Send email → `references/mailer.md`
+- Run background work → `references/messenger.md`
+- Schedule recurring work → `references/scheduler.md`
+- Secure an endpoint → `security.md`
+- Write a test → `testing.md`
+- Configure the framework → `framework-config.md`
+- … (one row per common task)
 
-Groups:
+### 3. Component catalog
 
-- **Network / I/O**: `http-client`, `mailer`, `notifier`, `mime`
-- **Data & state**: `cache`, `lock`, `semaphore`, `rate-limiter`,
-  `messenger`, `scheduler`, `workflow`
-- **Filesystem & process**: `filesystem`, `finder`, `process`
-- **Data transformation & validation**: `serializer`, `validator`, `string`,
-  `uid`, `html-sanitizer`, `clock`, `expression-language`
-- **HTTP / framework essentials**: `http-foundation`, `routing`,
-  `security-bundle`, `form`, `twig-bundle`, `translation`, `console`,
-  `dependency-injection`, `event-dispatcher`, `yaml`, `config`, `runtime`,
-  `asset` / `asset-mapper`, `web-link`
-- **Testing / crawling**: `panther`, `dom-crawler`, `browser-kit`,
-  `css-selector`
+The existing catalog (unchanged). Grouped tables: Network/IO, Data & state,
+Filesystem & process, Data transformation & validation, HTTP/framework
+essentials, Testing/crawling. Each row: component → replaces → docs link →
+reference file (if any).
 
-Each docs link points to `https://symfony.com/doc/7.4/...` (pinned to 7.4 so
-guidance matches the project's Symfony version).
+### 4. Decision rule
+
+A short imperative section telling Claude:
+
+1. For task-shaped work, follow the matching task reference.
+2. Before reaching for a third-party library, check the component catalog.
+3. Pin all examples to Symfony 7.4 docs.
 
 ## Reference files
 
-Each of the 18 reference files in `references/` follows this template:
+All reference files use the same template:
 
 ```
-# <Component name>
+# <Title>
 
 ## When to use
-One-liner describing the use case.
-
-## Replaces
-Bullet list of common vendor libs / patterns this displaces.
-
-## Install
-composer require ...
-
+## What you need
 ## Minimal example
-<10–30 line code snippet>
-
 ## Common patterns
-2–4 snippets for the most frequent real-world uses
-(e.g. for lock: blocking lock, expiring lock, named store).
-
 ## Gotchas
-Version notes, traps, what NOT to do.
-
 ## Docs
-https://symfony.com/doc/7.4/components/<name>.html
 ```
 
-Reference files are loaded on demand — when Claude is about to write code
-that touches the component. They stay out of the always-loaded skill body so
-the catalog remains lightweight.
+**Task references** focus on the canonical Symfony workflow for the task
+(attributes, services, console commands, conventions).
 
-### Reference file set (18 files)
-
-The components most likely to be reached for in vendor-specific form:
-
-1. `lock.md`
-2. `http-client.md`
-3. `cache.md`
-4. `mailer.md`
-5. `messenger.md`
-6. `notifier.md`
-7. `process.md`
-8. `filesystem.md`
-9. `finder.md`
-10. `serializer.md`
-11. `validator.md`
-12. `rate-limiter.md`
-13. `scheduler.md`
-14. `workflow.md`
-15. `string.md`
-16. `uid.md`
-17. `clock.md`
-18. `html-sanitizer.md`
-
-Catalog-only entries (no reference file): the HTTP/framework essentials and
-testing/crawling groups above. These are already idiomatic when working in
-Symfony and rarely confused with third-party alternatives.
+**Component references** focus on which vendor lib they replace and how to
+write idiomatic code with the component.
 
 ## Packaging for `npx skills`
 
 `npx skills` installs from a directory (local path or git URL) and copies
-each skill folder under `skills/` into `~/.claude/skills/`.
-
-The repo provides:
+each skill folder under `skills/` into `~/.claude/skills/`. Repo provides:
 
 - `skills/symfony/` as the installable skill folder.
-- `package.json` with `name`, `version`, `description`, `repository`, and
-  `keywords` so the package is resolvable when referenced as
-  `github:recranet/symfony-skills` or installed locally.
-- `README.md` documenting:
-  - what the skill does and why,
-  - prerequisites (Symfony 7.4+),
-  - install command: `npx skills install github:recranet/symfony-skills`,
-  - alternative: `npx skills install /path/to/clone`,
-  - how to contribute (add a reference file, update the catalog).
+- `package.json` with name, version, description, repository, keywords.
+- `README.md` documenting install commands and verification.
 
 ## Out of scope
 
-- Other Symfony versions (5.x, 6.x). Skill is 7.4-only — `description`
-  states this and reference docs link to the 7.4 docs.
-- Bundle ecosystem (EasyAdmin, API Platform, etc.). Only first-party Symfony
-  components.
-- Code-generation guidance (`make:*` recipes). Could be a follow-up skill.
-- Upgrade/migration guidance from older Symfony versions. Could be a
-  follow-up skill.
+- Symfony 5.x / 6.x (skill is 7.4+ only).
+- Third-party bundle ecosystem (EasyAdmin, API Platform, Sylius, etc.).
+- Code-generation guidance for `make:*` beyond the recipes mentioned in
+  task references — the `MakerBundle` is the source of truth.
+- Frontend frameworks consumed via AssetMapper (React, Vue stacks).
 
 ## Success criteria
 
 - `npx skills install github:recranet/symfony-skills` places
-  `~/.claude/skills/symfony/` with `SKILL.md` and `references/*.md`.
-- When Claude is about to write code that calls Guzzle, PHPMailer, a direct
-  Redis client, `exec()`, etc., in a Symfony 7.4+ repo, the skill activates
-  and Claude proposes the corresponding Symfony component instead.
-- For each of the 18 high-misuse-risk components, Claude can load the
-  reference file and write idiomatic, working code without further docs
-  lookup.
+  `~/.claude/skills/symfony/` with `SKILL.md` and 26 reference files.
+- For broad Symfony tasks ("add a route", "add a console command", "secure
+  this endpoint", "write a test for this controller") Claude can load the
+  matching task reference and produce idiomatic 7.4 code.
+- For component-replacement scenarios (Guzzle, PHPMailer, direct Redis,
+  etc.) Claude proposes the Symfony component instead.
+- When ddev is present in the project, Claude prefixes shell commands with
+  `ddev`.

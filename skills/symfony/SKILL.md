@@ -1,106 +1,210 @@
 ---
 name: symfony
-description: Use when writing or modifying PHP code in a Symfony 7.4+ project (composer.json requires symfony/framework-bundle ^7.4, or repo has bin/console and config/packages/). Steers toward Symfony's first-party components — symfony/lock, symfony/http-client, symfony/mailer, symfony/cache, symfony/messenger, symfony/notifier, symfony/process, symfony/filesystem, symfony/serializer, symfony/rate-limiter, symfony/scheduler, symfony/workflow, symfony/uid, symfony/clock — before reaching for vendor-specific libraries such as Guzzle, PHPMailer, php-amqplib, ramsey/uuid, HTMLPurifier, or direct Redis/Memcached clients. Includes a catalog of Symfony components and on-demand reference docs for the most-commonly-misused ones.
+description: Use when working on any task in a Symfony 7.4+ project — adding routes/controllers, Doctrine entities and migrations, console commands, event listeners, security/firewalls, forms, Twig templates, tests, framework configuration, mailer/messenger/notifier, caching/locking/rate-limiting, or anything else. Detection: composer.json requires symfony/framework-bundle ^7.4, or repo has bin/console and config/packages/. Covers idiomatic Symfony patterns (attributes, autowiring, make:* recipes), first-party components preferred over vendor libs (symfony/lock not Redis SETNX, symfony/http-client not Guzzle, symfony/mailer not PHPMailer, symfony/uid not ramsey/uuid, symfony/html-sanitizer not HTMLPurifier, symfony/process not exec, etc.), and the full framework configuration reference. When the project has ddev (.ddev/config.yaml), prefix shell commands with `ddev`.
 ---
 
-# Symfony 7.4+ Component Skill
+# Symfony 7.4+ Skill
 
-When working in a Symfony 7.4+ project, prefer Symfony's first-party components
-over vendor-specific equivalents whenever both fit the use case.
+Helps with any task in a Symfony 7.4+ project: idiomatic patterns, first-party
+components, and configuration. All examples pin to the 7.4 documentation.
 
-## The decision rule
+## Tooling — ddev when present
 
-Before you run `composer require <third-party-lib>` or write code that calls a
-non-Symfony library for one of the problem areas in the catalog below:
+Before running any shell command:
 
-1. Check the catalog. If a Symfony component covers the use case, use it.
-2. If a per-component reference file is listed, read it before writing code so
-   the result is idiomatic.
-3. Only fall back to a third-party library when the Symfony component
-   genuinely does not cover the requirement (and call this out explicitly).
+- If the project has `.ddev/config.yaml`, prefix with `ddev`. Examples:
+  `ddev php bin/console make:migration`, `ddev composer require lock`,
+  `ddev php bin/console doctrine:migrations:migrate`.
+- Otherwise use the host environment directly:
+  `php bin/console …`, `composer …`. The Symfony CLI (`symfony console …`)
+  is fine if installed.
 
-The catalog and reference docs are pinned to Symfony 7.4. Docs links target
-`https://symfony.com/doc/7.4/`.
+This applies to every command in the references below — substitute the
+prefix as needed.
 
-## Catalog
+## 1. Working in a Symfony project
+
+Standard layout:
+
+```
+.
+├── bin/console               # CLI entrypoint
+├── config/
+│   ├── bundles.php
+│   ├── packages/             # bundle configuration (one file per bundle)
+│   ├── routes/               # route imports
+│   ├── routes.yaml
+│   └── services.yaml
+├── migrations/               # DoctrineMigrationsBundle
+├── public/                   # web root, contains index.php
+├── src/                      # PSR-4 namespace App\
+│   ├── Controller/
+│   ├── Entity/
+│   ├── Repository/
+│   ├── Form/
+│   ├── Security/
+│   ├── EventListener/
+│   ├── Command/
+│   └── ...
+├── templates/                # Twig
+├── tests/                    # PSR-4 namespace App\Tests\
+├── translations/
+├── var/                      # cache, log (git-ignored)
+├── vendor/                   # composer (git-ignored)
+├── .env, .env.local          # env vars
+├── composer.json
+├── symfony.lock              # Flex lock
+```
+
+Conventions in `config/services.yaml`:
+
+- `autowire: true`, `autoconfigure: true`, `public: false`
+- Classes under `App\` are auto-registered as services
+- Add new services by just creating the class — no XML/YAML wiring needed
+  unless tags or arguments need overriding
+
+For details, see [`references/project-layout.md`](references/project-layout.md).
+
+## 2. Common tasks
+
+| Task | Reference | Docs |
+|------|-----------|------|
+| Add a route / controller | [controllers-and-routing.md](references/controllers-and-routing.md) | https://symfony.com/doc/7.4/controller.html |
+| Add an entity / repository / migration | [doctrine.md](references/doctrine.md) | https://symfony.com/doc/7.4/doctrine.html |
+| Add a console command | [console-commands.md](references/console-commands.md) | https://symfony.com/doc/7.4/console.html |
+| React to an event | [events.md](references/events.md) | https://symfony.com/doc/7.4/event_dispatcher.html |
+| Secure an endpoint / firewall / voter | [security.md](references/security.md) | https://symfony.com/doc/7.4/security.html |
+| Write a unit / functional / browser test | [testing.md](references/testing.md) | https://symfony.com/doc/7.4/testing.html |
+| Configure the framework (`framework:` tree) | [framework-config.md](references/framework-config.md) | https://symfony.com/doc/current/reference/configuration/framework.html |
+| Validate input | [validator.md](references/validator.md) | https://symfony.com/doc/7.4/validation.html |
+| Send email | [mailer.md](references/mailer.md) | https://symfony.com/doc/7.4/mailer.html |
+| Send notification (chat/SMS/push) | [notifier.md](references/notifier.md) | https://symfony.com/doc/7.4/notifier.html |
+| Run background / queued work | [messenger.md](references/messenger.md) | https://symfony.com/doc/7.4/messenger.html |
+| Schedule recurring work | [scheduler.md](references/scheduler.md) | https://symfony.com/doc/7.4/scheduler.html |
+| Make HTTP calls outbound | [http-client.md](references/http-client.md) | https://symfony.com/doc/7.4/http_client.html |
+| Cache expensive work | [cache.md](references/cache.md) | https://symfony.com/doc/7.4/cache.html |
+| Acquire a lock | [lock.md](references/lock.md) | https://symfony.com/doc/7.4/lock.html |
+| Rate-limit something | [rate-limiter.md](references/rate-limiter.md) | https://symfony.com/doc/7.4/rate_limiter.html |
+| Model a state machine | [workflow.md](references/workflow.md) | https://symfony.com/doc/7.4/workflow.html |
+| Serialize/deserialize | [serializer.md](references/serializer.md) | https://symfony.com/doc/7.4/serializer.html |
+| Run an external process | [process.md](references/process.md) | https://symfony.com/doc/7.4/components/process.html |
+| Walk files / find files | [finder.md](references/finder.md) | https://symfony.com/doc/7.4/components/finder.html |
+| Filesystem operations | [filesystem.md](references/filesystem.md) | https://symfony.com/doc/7.4/components/filesystem.html |
+| String manipulation / slugs | [string.md](references/string.md) | https://symfony.com/doc/7.4/components/string.html |
+| Generate UUIDs / ULIDs | [uid.md](references/uid.md) | https://symfony.com/doc/7.4/components/uid.html |
+| Get "now" testably | [clock.md](references/clock.md) | https://symfony.com/doc/7.4/components/clock.html |
+| Sanitize user-submitted HTML | [html-sanitizer.md](references/html-sanitizer.md) | https://symfony.com/doc/7.4/html_sanitizer.html |
+| Build a form | — | https://symfony.com/doc/7.4/forms.html |
+| Render with Twig | — | https://symfony.com/doc/7.4/templates.html |
+| Translate strings | — | https://symfony.com/doc/7.4/translation.html |
+| Manage env / secrets | — | https://symfony.com/doc/7.4/configuration/env_var_processors.html |
+
+## 3. Component catalog
+
+Quick scan of Symfony components grouped by problem area. Use this when
+deciding between a Symfony component and a third-party library — for any
+row whose "Replaces" column matches what you're about to reach for, use
+the Symfony component.
 
 ### Network / I/O
 
-| Component | Replaces | Docs | Reference |
-|-----------|----------|------|-----------|
-| `symfony/http-client` | Guzzle, curl wrappers, file_get_contents for HTTP | https://symfony.com/doc/7.4/http_client.html | [http-client.md](references/http-client.md) |
-| `symfony/mailer` | PHPMailer, SwiftMailer, vendor SMTP SDKs | https://symfony.com/doc/7.4/mailer.html | [mailer.md](references/mailer.md) |
-| `symfony/notifier` | Twilio/Slack/Discord/Telegram SDKs for notifications | https://symfony.com/doc/7.4/notifier.html | [notifier.md](references/notifier.md) |
-| `symfony/mime` | nesbot/MIME builders, custom MIME assembly | https://symfony.com/doc/7.4/components/mime.html | — |
+| Component | Replaces | Reference |
+|-----------|----------|-----------|
+| `symfony/http-client` | Guzzle, curl wrappers, file_get_contents for HTTP | [http-client.md](references/http-client.md) |
+| `symfony/mailer` | PHPMailer, SwiftMailer, vendor SMTP SDKs | [mailer.md](references/mailer.md) |
+| `symfony/notifier` | Twilio/Slack/Discord/Telegram SDKs for notifications | [notifier.md](references/notifier.md) |
+| `symfony/mime` | nesbot/MIME builders, custom MIME assembly | — |
 
 ### Data & state
 
-| Component | Replaces | Docs | Reference |
-|-----------|----------|------|-----------|
-| `symfony/cache` | Direct Redis/Memcached/APCu clients | https://symfony.com/doc/7.4/cache.html | [cache.md](references/cache.md) |
-| `symfony/lock` | Redis SETNX wrappers, flock helpers, custom mutexes | https://symfony.com/doc/7.4/lock.html | [lock.md](references/lock.md) |
-| `symfony/semaphore` | Hand-rolled concurrency limits | https://symfony.com/doc/7.4/components/semaphore.html | — |
-| `symfony/rate-limiter` | Hand-rolled rate limit code, third-party limiters | https://symfony.com/doc/7.4/rate_limiter.html | [rate-limiter.md](references/rate-limiter.md) |
-| `symfony/messenger` | php-amqplib direct use, vendor queue SDKs | https://symfony.com/doc/7.4/messenger.html | [messenger.md](references/messenger.md) |
-| `symfony/scheduler` | Cron-based packages, hand-rolled scheduling | https://symfony.com/doc/7.4/scheduler.html | [scheduler.md](references/scheduler.md) |
-| `symfony/workflow` | Hand-rolled state machines | https://symfony.com/doc/7.4/workflow.html | [workflow.md](references/workflow.md) |
+| Component | Replaces | Reference |
+|-----------|----------|-----------|
+| `symfony/cache` | Direct Redis/Memcached/APCu clients | [cache.md](references/cache.md) |
+| `symfony/lock` | Redis SETNX wrappers, flock helpers, custom mutexes | [lock.md](references/lock.md) |
+| `symfony/semaphore` | Hand-rolled concurrency limits | — |
+| `symfony/rate-limiter` | Hand-rolled rate limit code, third-party limiters | [rate-limiter.md](references/rate-limiter.md) |
+| `symfony/messenger` | php-amqplib direct use, vendor queue SDKs | [messenger.md](references/messenger.md) |
+| `symfony/scheduler` | Cron-based packages, hand-rolled scheduling | [scheduler.md](references/scheduler.md) |
+| `symfony/workflow` | Hand-rolled state machines | [workflow.md](references/workflow.md) |
 
 ### Filesystem & process
 
-| Component | Replaces | Docs | Reference |
-|-----------|----------|------|-----------|
-| `symfony/filesystem` | Raw `mkdir`, `rename`, `copy`, `unlink` | https://symfony.com/doc/7.4/components/filesystem.html | [filesystem.md](references/filesystem.md) |
-| `symfony/finder` | `glob`, `scandir`, `RecursiveIteratorIterator` | https://symfony.com/doc/7.4/components/finder.html | [finder.md](references/finder.md) |
-| `symfony/process` | `exec`, `shell_exec`, `proc_open` | https://symfony.com/doc/7.4/components/process.html | [process.md](references/process.md) |
+| Component | Replaces | Reference |
+|-----------|----------|-----------|
+| `symfony/filesystem` | Raw `mkdir`, `rename`, `copy`, `unlink` | [filesystem.md](references/filesystem.md) |
+| `symfony/finder` | `glob`, `scandir`, `RecursiveIteratorIterator` | [finder.md](references/finder.md) |
+| `symfony/process` | `exec`, `shell_exec`, `proc_open` | [process.md](references/process.md) |
 
 ### Data transformation & validation
 
-| Component | Replaces | Docs | Reference |
-|-----------|----------|------|-----------|
-| `symfony/serializer` | JMS Serializer, hand-rolled (de)serialization | https://symfony.com/doc/7.4/serializer.html | [serializer.md](references/serializer.md) |
-| `symfony/validator` | Hand-rolled validation, respect/validation | https://symfony.com/doc/7.4/validation.html | [validator.md](references/validator.md) |
-| `symfony/string` | Ad-hoc `mb_*` usage, custom slug functions | https://symfony.com/doc/7.4/components/string.html | [string.md](references/string.md) |
-| `symfony/uid` | `ramsey/uuid` for most cases | https://symfony.com/doc/7.4/components/uid.html | [uid.md](references/uid.md) |
-| `symfony/html-sanitizer` | HTMLPurifier | https://symfony.com/doc/7.4/html_sanitizer.html | [html-sanitizer.md](references/html-sanitizer.md) |
-| `symfony/clock` | Direct `new \DateTimeImmutable()` (for testability) | https://symfony.com/doc/7.4/components/clock.html | [clock.md](references/clock.md) |
-| `symfony/expression-language` | `eval`, custom rule DSLs | https://symfony.com/doc/7.4/components/expression_language.html | — |
+| Component | Replaces | Reference |
+|-----------|----------|-----------|
+| `symfony/serializer` | JMS Serializer, hand-rolled (de)serialization | [serializer.md](references/serializer.md) |
+| `symfony/validator` | Hand-rolled validation, respect/validation | [validator.md](references/validator.md) |
+| `symfony/string` | Ad-hoc `mb_*` usage, custom slug functions | [string.md](references/string.md) |
+| `symfony/uid` | `ramsey/uuid` for most cases | [uid.md](references/uid.md) |
+| `symfony/html-sanitizer` | HTMLPurifier | [html-sanitizer.md](references/html-sanitizer.md) |
+| `symfony/clock` | Direct `new \DateTimeImmutable()` (for testability) | [clock.md](references/clock.md) |
+| `symfony/expression-language` | `eval`, custom rule DSLs | — |
 
 ### HTTP / framework essentials
 
-These are already idiomatic when working in Symfony — listed for completeness.
+Already idiomatic when working in Symfony — listed for completeness, no
+reference files needed.
 
-| Component | Docs |
-|-----------|------|
-| `symfony/http-foundation` | https://symfony.com/doc/7.4/components/http_foundation.html |
-| `symfony/routing` | https://symfony.com/doc/7.4/routing.html |
-| `symfony/security-bundle` | https://symfony.com/doc/7.4/security.html |
-| `symfony/form` | https://symfony.com/doc/7.4/forms.html |
-| `symfony/twig-bundle` | https://symfony.com/doc/7.4/templates.html |
-| `symfony/translation` | https://symfony.com/doc/7.4/translation.html |
-| `symfony/console` | https://symfony.com/doc/7.4/console.html |
-| `symfony/dependency-injection` | https://symfony.com/doc/7.4/service_container.html |
-| `symfony/event-dispatcher` | https://symfony.com/doc/7.4/event_dispatcher.html |
-| `symfony/yaml` | https://symfony.com/doc/7.4/components/yaml.html |
-| `symfony/config` | https://symfony.com/doc/7.4/components/config.html |
-| `symfony/runtime` | https://symfony.com/doc/7.4/components/runtime.html |
-| `symfony/asset` / `symfony/asset-mapper` | https://symfony.com/doc/7.4/frontend/asset_mapper.html |
-| `symfony/web-link` | https://symfony.com/doc/7.4/web_link.html |
+`symfony/http-foundation`, `symfony/routing`, `symfony/security-bundle`,
+`symfony/form`, `symfony/twig-bundle`, `symfony/translation`,
+`symfony/console`, `symfony/dependency-injection`,
+`symfony/event-dispatcher`, `symfony/yaml`, `symfony/config`,
+`symfony/runtime`, `symfony/asset`, `symfony/asset-mapper`,
+`symfony/web-link`.
 
 ### Testing / crawling
 
-| Component | Docs |
-|-----------|------|
-| `symfony/panther` | https://github.com/symfony/panther |
-| `symfony/dom-crawler` | https://symfony.com/doc/7.4/components/dom_crawler.html |
-| `symfony/browser-kit` | https://symfony.com/doc/7.4/components/browser_kit.html |
-| `symfony/css-selector` | https://symfony.com/doc/7.4/components/css_selector.html |
+`symfony/panther`, `symfony/dom-crawler`, `symfony/browser-kit`,
+`symfony/css-selector`. See [testing.md](references/testing.md).
 
-## Usage notes
+## 4. Decision rule
 
-- All examples in reference files assume Symfony Flex is set up (services
-  autowired, autoconfigured).
-- When a reference file lists `composer require`, prefer the matching Flex
-  alias if the project uses Flex (`composer require lock`, `composer require
-  http-client`, etc.).
-- The skill targets Symfony 7.4+. Patterns that differ in earlier versions
-  are out of scope.
+When picking an approach:
+
+1. **Task-shaped work** (routes, entities, console commands, events,
+   security, tests, config) — open the matching task reference and follow
+   its patterns. Don't invent a new convention.
+2. **Component choice** — before `composer require`-ing a third-party
+   library, check the catalog above. If a Symfony component covers the
+   use case, use it; only fall back to a third-party library when the
+   Symfony component genuinely doesn't fit (call that out explicitly).
+3. **Configuration** — for any `framework:` key, consult
+   [framework-config.md](references/framework-config.md) before
+   guessing the option name or value.
+4. **All examples target Symfony 7.4.** Patterns from older versions
+   (`MessageHandlerInterface`, route YAML when attributes work, public
+   service ids) are out of scope.
+
+## Flex aliases
+
+Many components are installable by short name when Flex is present:
+
+```
+composer require lock           # symfony/lock
+composer require http-client    # symfony/http-client
+composer require mailer         # symfony/mailer
+composer require cache          # already in symfony/framework-bundle
+composer require messenger      # symfony/messenger
+composer require notifier       # symfony/notifier
+composer require scheduler      # symfony/scheduler
+composer require workflow       # symfony/workflow
+composer require uid            # symfony/uid
+composer require validator      # symfony/validator
+composer require serializer     # symfony/serializer-pack
+composer require security       # symfony/security-bundle
+composer require form           # symfony/form
+composer require twig           # symfony/twig-bundle
+composer require translation    # symfony/translation
+composer require test           # symfony/test-pack
+composer require maker --dev    # symfony/maker-bundle
+composer require profiler --dev # symfony/web-profiler-bundle
+```
+
+Prefer aliases — they install the matching recipe (config, env vars, services).
