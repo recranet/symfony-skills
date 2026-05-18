@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "symfony": {
+      "source": "/tmp/test-skill7",
+      "sourceType": "local",
+      "computedHash": "99033baa7d5ff5ee33178479789cd07f2eeaf6ab1aafddb26ffe305461f5dea2"
+    }
+  }
+}
