@@ -72,6 +72,7 @@ For details, see [`references/project-layout.md`](references/project-layout.md).
 | Add a route / controller | [controllers-and-routing.md](references/controllers-and-routing.md) | https://symfony.com/doc/7.4/controller.html |
 | Add an entity / repository / migration | [doctrine.md](references/doctrine.md) | https://symfony.com/doc/7.4/doctrine.html |
 | Add a console command | [console-commands.md](references/console-commands.md) | https://symfony.com/doc/7.4/console.html |
+| Debug routes / services / config / DB | [debugging.md](references/debugging.md) | — |
 | React to an event | [events.md](references/events.md) | https://symfony.com/doc/7.4/event_dispatcher.html |
 | Secure an endpoint / firewall / voter | [security.md](references/security.md) | https://symfony.com/doc/7.4/security.html |
 | Write a unit / functional / browser test | [testing.md](references/testing.md) | https://symfony.com/doc/7.4/testing.html |
