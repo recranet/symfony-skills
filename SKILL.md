@@ -22,6 +22,27 @@ Before running any shell command:
 This applies to every command in the references below — substitute the
 prefix as needed.
 
+## Version check — gate version-specific features
+
+Some patterns in this skill require a minimum Symfony version. Detect the
+installed version once per session before using them:
+
+```bash
+composer show symfony/framework-bundle --no-ansi | grep versions
+# fallback: grep '"symfony/framework-bundle"' composer.json
+```
+
+| Installed version | What applies |
+|-------------------|--------------|
+| >= 8.1 | Everything, including [whats-new-8.1.md](references/whats-new-8.1.md) |
+| 7.4 – 8.0 | Core references + [whats-new-7.4.md](references/whats-new-7.4.md); **no** 8.1 features |
+| < 7.4 | Core references only; skip both what's-new pages |
+
+Never suggest a feature from a what's-new page without confirming the
+version meets its gate. When a newer feature would be the ideal fit but
+the project's version is too old, use the classic pattern and mention the
+upgrade option.
+
 ## 1. Working in a Symfony project
 
 Standard layout:
@@ -69,6 +90,8 @@ For details, see [`references/project-layout.md`](references/project-layout.md).
 
 | Task | Reference | Docs |
 |------|-----------|------|
+| Use a Symfony 7.4 feature (requires >= 7.4) | [whats-new-7.4.md](references/whats-new-7.4.md) | https://symfony.com/blog/symfony-7-4-curated-new-features |
+| Use a Symfony 8.1 feature (requires >= 8.1) | [whats-new-8.1.md](references/whats-new-8.1.md) | https://symfony.com/blog/symfony-8-1-curated-new-features |
 | Add a route / controller | [controllers-and-routing.md](references/controllers-and-routing.md) | https://symfony.com/doc/7.4/controller.html |
 | Add an entity / repository / migration | [doctrine.md](references/doctrine.md) | https://symfony.com/doc/7.4/doctrine.html |
 | Add a console command | [console-commands.md](references/console-commands.md) | https://symfony.com/doc/7.4/console.html |
@@ -182,6 +205,10 @@ When picking an approach:
 4. **All examples target Symfony 7.4.** Patterns from older versions
    (`MessageHandlerInterface`, route YAML when attributes work, public
    service ids) are out of scope.
+5. **Version-gated features** — anything from
+   [whats-new-7.4.md](references/whats-new-7.4.md) or
+   [whats-new-8.1.md](references/whats-new-8.1.md) requires the version
+   check from "Version check" above to pass first.
 
 ## Flex aliases
 

@@ -22,6 +22,10 @@ and reaching for first-party components instead of vendor libraries.
   - `testing.md` — `KernelTestCase`, `WebTestCase`, Panther
   - `framework-config.md` — the full `framework:` config tree
 
+  **Version-gated** (only when the installed Symfony version allows):
+  - `whats-new-7.4.md` — curated Symfony 7.4 features (requires >= 7.4)
+  - `whats-new-8.1.md` — curated Symfony 8.1 features (requires >= 8.1)
+
   **Component-oriented** (Symfony component over vendor lib):
   `lock`, `http-client`, `cache`, `mailer`, `messenger`, `notifier`,
   `process`, `filesystem`, `finder`, `serializer`, `validator`,
