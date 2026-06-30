@@ -18,6 +18,7 @@ and reaching for first-party components instead of vendor libraries.
   - `doctrine.md` — entities, migrations, repositories, query patterns
   - `security.md` — firewalls, authenticators, voters, password hashing
   - `console-commands.md` — `#[AsCommand]`, input/options, `SymfonyStyle`
+  - `import-commands.md` — memory-safe imports: batch flush, `clear()`, ID-first loops
   - `events.md` — `#[AsEventListener]`, kernel events, custom events
   - `testing.md` — `KernelTestCase`, `WebTestCase`, Panther
   - `framework-config.md` — the full `framework:` config tree
