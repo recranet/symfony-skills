@@ -163,12 +163,14 @@ batch itself bloats memory. 50–500 is typical.
 > parent) inside the loop, re-`find()` it after each clear or hold its ID,
 > not the object.
 
-**Never resolve a relation once outside the loop.** This is the most common
-way the pattern breaks: you fetch the shared `Organization` before the loop to
-"avoid re-querying", but the first `clear()` detaches it. Subsequent
-iterations associate every entity with a detached object — Doctrine then
-either errors (`A new entity was found through the relationship…`) or silently
-re-inserts a duplicate organization.
+**Always fetch every relation inside the loop. No exceptions.** Make this an
+unconditional habit, not a judgement call — even when a parent looks constant
+across iterations, re-fetch it each time so the code stays correct as the loop
+evolves. The most common way the pattern breaks is resolving a shared
+`Organization` *before* the loop to "avoid re-querying": the first `clear()`
+detaches it, and subsequent iterations associate every entity with a detached
+object — Doctrine then either errors (`A new entity was found through the
+relationship…`) or silently re-inserts a duplicate organization.
 
 ```php
 // WRONG — $organization is detached after the first clear().
@@ -193,10 +195,13 @@ foreach ($ids as $id) {
 }
 ```
 
-If re-fetching the same parent every iteration is a measurable cost, use
-`$this->em->getReference(Organization::class, $orgId)` instead of `find()` —
-it returns a lightweight managed proxy without a query, and it too must be
-re-acquired after each `clear()`.
+Re-fetch unconditionally — the per-iteration query is cheap and the
+correctness guarantee is worth far more than saving it. If profiling ever
+shows the re-fetch is genuinely hot, swap `find()` for
+`$this->em->getReference(Organization::class, $orgId)` — a lightweight managed
+proxy with no query — but keep it **inside** the loop; like every other
+managed object, the reference is invalidated by `clear()` and must be
+re-acquired each iteration.
 
 ### Streaming reads with `toIterable()`
 
@@ -324,9 +329,9 @@ processed, skipped, failed. See [console-commands.md](console-commands.md).
 
 - **`flush()` does not free memory — `clear()` does.** The Unit of Work keeps
   every managed entity until cleared. A loop that only flushes still leaks.
-- **`clear()` detaches *everything*.** Re-`find()` shared/parent entities
-  after clearing, or work from IDs. A stale reference flushed after a clear
-  re-inserts or errors.
+- **`clear()` detaches *everything*.** Always re-fetch relations inside the
+  loop — never resolve a shared/parent entity once before it. A stale
+  reference flushed after a clear re-inserts or errors.
 - **Raising `memory_limit` is not a fix.** It moves the cliff a few months
   out. Batch + clear is the fix.
 - **Per-row logging is a leak.** `fingers_crossed` Monolog and the Doctrine
