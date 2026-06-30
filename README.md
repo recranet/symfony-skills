@@ -6,11 +6,15 @@ and reaching for first-party components instead of vendor libraries.
 
 ## What's included
 
-- **`SKILL.md`** — always-loaded entry point. Tooling conventions (ddev when
-  present), project layout summary, a task index pointing at the right reference
-  for each common job, and a catalog of ~40 components grouped by problem area.
+The skill lives under `symfony/` (a named skill directory, so `npx skills`
+bundles `SKILL.md` together with everything in `references/`).
 
-- **`references/`** — on-demand reference docs:
+- **`symfony/SKILL.md`** — always-loaded entry point. Tooling conventions (ddev
+  when present), project layout summary, a task index pointing at the right
+  reference for each common job, and a catalog of ~40 components grouped by
+  problem area.
+
+- **`symfony/references/`** — on-demand reference docs:
 
   **Task-oriented** (broad Symfony work):
   - `project-layout.md` — directory layout, tooling, autowiring conventions
@@ -55,18 +59,19 @@ host.
 Install via [`npx skills`](https://github.com/anthropics/skills):
 
 ```sh
-npx skills install github:recranet/symfony-skills
+npx skills add recranet/symfony-skills
 ```
 
 Or from a local clone:
 
 ```sh
 git clone https://github.com/recranet/symfony-skills.git
-npx skills install ./symfony-skills
+npx skills add ./symfony-skills
 ```
 
-This copies the skill into your local agent environment. Restart Claude Code
-or run `/skill reload` to pick it up.
+This copies the skill (the `symfony/` directory — `SKILL.md` plus all of
+`references/`) into your local agent environment. Restart Claude Code or run
+`/skill reload` to pick it up.
 
 ## Verifying it's active
 
@@ -88,7 +93,7 @@ To add or improve a reference:
 
 1. If a new task/component, add a row to `SKILL.md` (task index or component
    catalog).
-2. Create `references/<name>.md` following the existing template (when to use /
+2. Create `symfony/references/<name>.md` following the existing template (when to use /
    what you need / minimal example / common patterns / gotchas / docs links).
 3. Open a PR.
 

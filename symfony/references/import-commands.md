@@ -203,6 +203,34 @@ proxy with no query — but keep it **inside** the loop; like every other
 managed object, the reference is invalidated by `clear()` and must be
 re-acquired each iteration.
 
+### Where the time actually goes
+
+Before tuning anything, know what you're up against — the usual suspect isn't
+the one people reach for first:
+
+- **The source is often the real bottleneck.** For an API import (HubSpot,
+  Sendgrid), network latency, pagination, and rate limits usually dwarf the DB
+  write — a 200 ms page fetch makes the `flush()` next to it noise. Profile
+  (`bin/console --profile -vvv`, see [debugging.md](debugging.md)) before
+  assuming it's Doctrine.
+- **`flush()` cost grows if you don't `clear()`.** Each `flush()` recomputes
+  change sets for *every* managed entity, so skipping `clear()` makes total
+  work O(n²) — the classic "import starts fast, then crawls." Same growth that
+  leaks memory, seen from the speed side.
+- **The ORM does not batch INSERTs.** One `persist()` is one `INSERT`
+  statement; batching only groups them into fewer transactions, not fewer
+  statements. So if raw write volume is genuinely the bottleneck, a bigger
+  batch size won't help — drop to DBAL for a multi-row `INSERT`,
+  `INSERT ... ON DUPLICATE KEY UPDATE`, or Postgres `COPY`.
+- **Indexes and listeners tax every write.** Heavy indexes slow each insert; a
+  Doctrine listener or `cascade: persist` fires per entity. Both scale with row
+  count.
+
+Batch size sits low on this list — the cost curve is flat across the typical
+range (the 50–500 above), so pick the default, expose `--batch-size`, and only
+revisit it if a profile shows writes are actually hot. Don't agonize over the
+exact number.
+
 ### Streaming reads with `toIterable()`
 
 If you must drive the loop from a query result (rather than IDs), use
@@ -292,7 +320,9 @@ ceiling.
 > Why this over watching memory in the Symfony profiler: the profiler shows
 > you *one run* on *today's* data. Defensive batching + a guard hold for every
 > future run as the dataset grows. Monitor to discover a leak; program
-> defensively so the leak can't take the process down.
+> defensively so the leak can't take the process down. To *find* where a run
+> allocates, profile it with `bin/console --profile -vvv <command>` — see
+> [debugging.md](debugging.md).
 
 ### Resumable / chunked imports
 
@@ -329,6 +359,11 @@ processed, skipped, failed. See [console-commands.md](console-commands.md).
 
 - **`flush()` does not free memory — `clear()` does.** The Unit of Work keeps
   every managed entity until cleared. A loop that only flushes still leaks.
+- **`flush()` flushes the *whole* Unit of Work, not just this batch.** There's
+  no per-entity flush in ORM 3 — every `flush()` writes every managed dirty
+  entity. `clear()` between batches bounds each flush to what that batch built,
+  so a row that failed mid-iteration can't be silently re-flushed by a later
+  one. `clear()` is failure isolation, not only memory hygiene.
 - **`clear()` detaches *everything*.** Always re-fetch relations inside the
   loop — never resolve a shared/parent entity once before it. A stale
   reference flushed after a clear re-inserts or errors.

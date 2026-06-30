@@ -90,6 +90,40 @@ instead.
 
 Anything `debug:*` is read-only — safe to run anywhere.
 
+## Profiling a command — `--profile`
+
+When a command is slow or eating memory, profile it instead of guessing.
+`--profile` (Symfony 6.4+, so always available in a 7.4+ project) collects a
+full profiler dump for the command run — execution time, peak memory,
+Doctrine queries, dispatched events and listeners, log records, and
+deprecations — the same panels you get for an HTTP request.
+
+```sh
+# Collect a profile for one run:
+ddev exec php bin/console --profile app:import:contacts
+
+# -v prints a clickable link to the profile in the web profiler:
+ddev exec php bin/console --profile -v app:import:contacts
+
+# -vvv also prints execution time and memory consumed straight to the terminal:
+ddev exec php bin/console --profile -vvv app:import:contacts
+```
+
+Requirements and notes:
+
+- **Dev / debug mode only.** The profiler is disabled in `prod`; run under
+  the default `dev` env (don't pass `--env=prod`).
+- **Web UI needs the web profiler bundle** (`composer require profiler --dev`).
+  The `-v` link and the full panel breakdown live at `/_profiler/<token>`,
+  served by that bundle. The `-vvv` time/memory summary prints regardless.
+- If the command is interrupted by a signal or fails, the profile still
+  captures what ran up to that point.
+
+This is the tool for *finding* where a command spends time or allocates
+memory. For commands that loop over large datasets, profiling tells you
+where the leak is, but the durable fix is defensive batching — see
+[import-commands.md](import-commands.md).
+
 ## Doctrine-specific debugging
 
 | Command | Use |
@@ -172,5 +206,6 @@ narrowing down what produced a line.
 
 - VarDumper: https://symfony.com/doc/7.4/components/var_dumper.html
 - `debug:*` commands: https://symfony.com/doc/7.4/console.html
+- Command profiler (`--profile`): https://symfony.com/blog/new-in-symfony-6-4-command-profiler
 - Doctrine migrations: https://symfony.com/doc/current/bundles/DoctrineMigrationsBundle/index.html
 - DBAL `dbal:run-sql`: https://www.doctrine-project.org/projects/doctrine-dbal/en/current/reference/configuration.html

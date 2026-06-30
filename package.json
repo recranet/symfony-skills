@@ -20,7 +20,6 @@
   },
   "homepage": "https://github.com/recranet/symfony-skills#readme",
   "files": [
-    "SKILL.md",
-    "references/"
+    "symfony/"
   ]
 }
