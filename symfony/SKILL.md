@@ -10,17 +10,11 @@ components, and configuration. All examples pin to the 7.4 documentation.
 
 ## Tooling — ddev when present
 
-Before running any shell command:
-
-- If the project has `.ddev/config.yaml`, prefix with `ddev`. Examples:
-  `ddev php bin/console make:migration`, `ddev composer require lock`,
-  `ddev php bin/console doctrine:migrations:migrate`.
-- Otherwise use the host environment directly:
-  `php bin/console …`, `composer …`. The Symfony CLI (`symfony console …`)
-  is fine if installed.
-
-This applies to every command in the references below — substitute the
-prefix as needed.
+Before running any shell command, check for `.ddev/config.yaml`. If it
+exists, every command in this skill's references needs the `ddev` prefix
+instead of running on the host. See [`references/ddev.md`](references/ddev.md)
+for the command mapping and why this matters most for
+`make:migration` / `doctrine:migrations:migrate`.
 
 ## Version check — gate version-specific features
 
@@ -90,6 +84,7 @@ For details, see [`references/project-layout.md`](references/project-layout.md).
 
 | Task | Reference | Docs |
 |------|-----------|------|
+| Run any command in a ddev project | [ddev.md](references/ddev.md) | https://ddev.readthedocs.io/ |
 | Use a Symfony 7.4 feature (requires >= 7.4) | [whats-new-7.4.md](references/whats-new-7.4.md) | https://symfony.com/blog/symfony-7-4-curated-new-features |
 | Use a Symfony 8.1 feature (requires >= 8.1) | [whats-new-8.1.md](references/whats-new-8.1.md) | https://symfony.com/blog/symfony-8-1-curated-new-features |
 | Add a route / controller | [controllers-and-routing.md](references/controllers-and-routing.md) | https://symfony.com/doc/7.4/controller.html |
