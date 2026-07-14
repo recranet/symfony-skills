@@ -124,6 +124,10 @@ memory. For commands that loop over large datasets, profiling tells you
 where the leak is, but the durable fix is defensive batching — see
 [import-commands.md](import-commands.md).
 
+For request/page-level profiling (not a single console command), ddev
+bundles its own PHP-level sampling profiler — `ddev xhprof` +
+`ddev xhgui` — see [ddev.md](ddev.md#profiling--xhprof--xhgui).
+
 ## Doctrine-specific debugging
 
 | Command | Use |

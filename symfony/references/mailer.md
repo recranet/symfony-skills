@@ -111,7 +111,8 @@ $email->getHeaders()->addTextHeader('X-Transport', 'newsletter');
 - `from()` is mandatory; configure a project-wide default via
   `framework.mailer.envelope` to avoid setting it everywhere.
 - In dev, use `MAILER_DSN=null://null` to swallow mail, or point at
-  Mailpit/MailHog for inspection.
+  Mailpit/MailHog for inspection. ddev bundles Mailpit by default — see
+  [ddev.md](ddev.md) for the DSN and how to open its UI.
 - For DKIM/SPF you must configure the transport's account — Symfony just
   hands the message off.
 
