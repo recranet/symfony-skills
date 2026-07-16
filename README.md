@@ -22,7 +22,7 @@ bundles `SKILL.md` together with everything in `references/`).
   - `doctrine.md` — entities, migrations, repositories, query patterns
   - `security.md` — firewalls, authenticators, voters, password hashing
   - `console-commands.md` — `#[AsCommand]`, input/options, `SymfonyStyle`
-  - `import-commands.md` — memory-safe imports: ID-first loops, per-iteration `clear()`, DBAL side effects
+  - `import-commands.md` — memory-safe imports: ID-first loops, per-iteration `clear()`, DBAL side effects, sync-dispatched side effects (outbox as escape hatch)
   - `events.md` — `#[AsEventListener]`, kernel events, custom events
   - `testing.md` — `KernelTestCase`, `WebTestCase`, Panther
   - `framework-config.md` — the full `framework:` config tree
