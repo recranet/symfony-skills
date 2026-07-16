@@ -90,7 +90,7 @@ For details, see [`references/project-layout.md`](references/project-layout.md).
 | Add a route / controller | [controllers-and-routing.md](references/controllers-and-routing.md) | https://symfony.com/doc/7.4/controller.html |
 | Add an entity / repository / migration | [doctrine.md](references/doctrine.md) | https://symfony.com/doc/7.4/doctrine.html |
 | Add a console command | [console-commands.md](references/console-commands.md) | https://symfony.com/doc/7.4/console.html |
-| Write a memory-safe import / batch command | [import-commands.md](references/import-commands.md) | https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/batch-processing.html |
+| Write a memory-safe import / batch command | [imports.md](references/imports.md) | https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/batch-processing.html |
 | Debug routes / services / config / DB, profile a command | [debugging.md](references/debugging.md) | — |
 | React to an event | [events.md](references/events.md) | https://symfony.com/doc/7.4/event_dispatcher.html |
 | Secure an endpoint / firewall / voter | [security.md](references/security.md) | https://symfony.com/doc/7.4/security.html |
@@ -100,6 +100,7 @@ For details, see [`references/project-layout.md`](references/project-layout.md).
 | Send email | [mailer.md](references/mailer.md) | https://symfony.com/doc/7.4/mailer.html |
 | Send notification (chat/SMS/push) | [notifier.md](references/notifier.md) | https://symfony.com/doc/7.4/notifier.html |
 | Run background / queued work | [messenger.md](references/messenger.md) | https://symfony.com/doc/7.4/messenger.html |
+| Add/route a message + handler (flush ownership, sync vs async) | [messenger.md](references/messenger.md) | https://symfony.com/doc/7.4/messenger.html |
 | Schedule recurring work | [scheduler.md](references/scheduler.md) | https://symfony.com/doc/7.4/scheduler.html |
 | Make HTTP calls outbound | [http-client.md](references/http-client.md) | https://symfony.com/doc/7.4/http_client.html |
 | Cache expensive work | [cache.md](references/cache.md) | https://symfony.com/doc/7.4/cache.html |

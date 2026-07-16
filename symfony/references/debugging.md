@@ -123,7 +123,7 @@ This is the tool for *finding* where a command spends time or allocates
 memory. For commands that loop over large datasets, profiling tells you
 where the leak is, but the durable fix is the ID-first loop with
 per-iteration `clear()` — see
-[import-commands.md](import-commands.md).
+[imports.md](imports.md).
 
 For request/page-level profiling (not a single console command), ddev
 bundles its own PHP-level sampling profiler — `ddev xhprof` +

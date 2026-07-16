@@ -148,8 +148,11 @@ side effect — whether or not a queue is involved.
 Two facts first, because they anchor everything below: **bulk DQL never
 needs a flush** — it executes against the database immediately, bypassing
 the UnitOfWork; `flush()` exists only to write changes made through managed
-entities. And **handlers flush themselves** — Messenger never flushes for
-you; an ORM-mutating handler ends with its own single `$this->em->flush()`.
+entities. And **Messenger never flushes for you** — flush ownership follows
+EntityManager ownership: a sync-routed handler borrows the dispatcher's
+EntityManager and never flushes (the dispatch site flushes directly below
+the dispatch), while an async handler owns its consumer EntityManager and
+flushes itself. Full conventions in [messenger.md](messenger.md).
 
 **Route these messages explicitly to the `sync` transport (`sync://`).**
 This is prescribed, not a choice: import side effects are small domain
@@ -177,13 +180,15 @@ other axis falls in line:
 
 The one condition sync imposes: the handler runs inside the **dispatcher's
 EntityManager**, not a fresh one. It inherits the identity map (its
-`find()`s are served stale pre-loaded instances first), its `flush()` writes
-the *whole* UnitOfWork (silently committing any half-finished changes the
-dispatching code had pending), and its exceptions propagate into the
-dispatcher. So **dispatch sync-routed messages only from points where the
-EntityManager is clean** — empty or fully flushed, e.g. after the loop's
-final flush+clear, as the last step before commit. A dirty dispatch context
-is a bug in the dispatch point; fix it there.
+`find()`s are served stale pre-loaded instances first), its exceptions
+propagate into the dispatcher, and any `flush()` it ran would write the
+*whole* UnitOfWork — silently committing half-finished changes the
+dispatching code had pending. That last hazard is why sync handlers never
+flush: the **dispatch site flushes directly below the dispatch**, where the
+UnitOfWork state is known. And **dispatch sync-routed messages only from
+points where the EntityManager is clean** — empty or fully flushed, e.g.
+after the loop's final flush+clear, as the last step before commit. A dirty
+dispatch context is a bug in the dispatch point; fix it there.
 
 **The escape hatch — async on the doctrine transport = the transactional
 outbox.** The day a side effect grows external I/O (an API call, mail) —
@@ -201,7 +206,10 @@ cron, unbounded if the worker is down), side effects become *eventually
 consistent*, and their failures retry independently via the failed transport
 instead of rolling the write back — a failure parked unnoticed in the failed
 queue is divergence until a human acts. Accept those costs only for the
-message that needs them.
+message that needs them — and treat the move as a behavioural migration,
+not a routing edit: flush ownership transfers to the handler (it must now
+flush itself). Follow the sync → async checklist in
+[messenger.md](messenger.md).
 
 Rules that keep this sound:
 
