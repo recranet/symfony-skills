@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/recranet/symfony-skills#readme",
   "files": [
-    "symfony/"
+    "symfony/",
+    "symfony-*/"
   ]
 }

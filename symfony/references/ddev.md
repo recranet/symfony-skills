@@ -80,7 +80,7 @@ MAILER_DSN=smtp://localhost:1025
 ```
 
 From inside the web container `localhost:1025` reaches Mailpit directly —
-no project hostname or extra config needed. See [mailer.md](mailer.md) for
+no project hostname or extra config needed. See the `symfony-mailer` skill for
 the mailer component itself; this is just the local-catch-all transport.
 
 ## Add-ons — Redis, RabbitMQ, and others
@@ -101,7 +101,7 @@ the repository and version.
 | `ddev redis-backend <image> [optimize]` | Swap the backing image (`redis`, `redis-alpine`, `valkey`, `valkey-alpine`, or any Redis-compatible image) |
 
 Corresponds to `symfony/cache` configured with a Redis adapter (see
-[cache.md](cache.md)) or Symfony session storage backed by Redis.
+the `symfony-cache` skill) or Symfony session storage backed by Redis.
 
 ### RabbitMQ (`ddev/ddev-rabbitmq`)
 
@@ -114,7 +114,7 @@ Corresponds to `symfony/cache` configured with a Redis adapter (see
 | `ddev rabbitmqctl …` / `ddev rabbitmqadmin …` | Raw CLI passthroughs for anything the wrapper doesn't cover |
 
 Pairs with `symfony/messenger` using the AMQP transport (see
-[messenger.md](messenger.md)) — `config.yaml`'s vhosts/queues typically
+the `symfony-messenger` skill) — `config.yaml`'s vhosts/queues typically
 mirror the transport names in `messenger.yaml`.
 
 **Auto-apply on every `ddev start`** — add a `post-start` hook so the
@@ -150,7 +150,7 @@ either, just a container at `http://gotenberg:3000`. Typical use: build the
 document as an HTML Twig template, then `symfony/http-client` POSTs it to
 Gotenberg's `/forms/chromium/convert/html` endpoint to get a PDF back,
 instead of shelling out to wkhtmltopdf or a headless-Chrome library
-directly (see [http-client.md](http-client.md)).
+directly (see the `symfony-http-client` skill).
 
 ### No official add-on? Write the docker-compose file by hand
 

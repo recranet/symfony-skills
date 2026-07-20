@@ -1,25 +1,32 @@
 ---
 name: symfony
-description: Idiomatic patterns and first-party components for Symfony 7.4+ projects - routing, Doctrine, security, forms, testing, and all core tasks
+description: Idiomatic patterns for Symfony 7.4, 8.0 or newer projects - project layout, routing, controllers, events, framework config, debugging, ddev tooling - plus an index routing every component task (Doctrine, Messenger, security, testing, caching, and more) to its companion symfony-* skill. Use for any task in a Symfony project.
 ---
 
-# Symfony 7.4+ Skill
+# Symfony 7.4, 8.0 or newer Skill
 
-Helps with any task in a Symfony 7.4+ project: idiomatic patterns, first-party
-components, and configuration. All examples pin to the 7.4 documentation.
+Helps with any task in a Symfony 7.4, 8.0 or newer project: idiomatic patterns,
+first-party components, and configuration. Examples target 7.4 and 8.0;
+newer features are version-gated (see "Version check" below).
+
+This is the hub of a skill family. Cross-cutting concerns (layout, routing,
+events, config, debugging, tooling) live here; each Symfony component has its
+own companion skill named `symfony-<component>` (e.g. `symfony-messenger`,
+`symfony-doctrine`). When a task below points at a companion skill, consult
+that skill for the patterns — don't improvise from memory.
 
 ## Tooling — ddev when present
 
 Before running any shell command, check for `.ddev/config.yaml`. If it
-exists, every command in this skill's references needs the `ddev` prefix
+exists, every command in this skill family needs the `ddev` prefix
 instead of running on the host. See [`references/ddev.md`](references/ddev.md)
 for the command mapping and why this matters most for
 `make:migration` / `doctrine:migrations:migrate`.
 
 ## Version check — gate version-specific features
 
-Some patterns in this skill require a minimum Symfony version. Detect the
-installed version once per session before using them:
+Some patterns in this skill family require a minimum Symfony version. Detect
+the installed version once per session before using them:
 
 ```bash
 composer show symfony/framework-bundle --no-ansi | grep versions
@@ -82,39 +89,41 @@ For details, see [`references/project-layout.md`](references/project-layout.md).
 
 ## 2. Common tasks
 
-| Task | Reference | Docs |
-|------|-----------|------|
+Rows pointing at a `symfony-*` skill: read that skill before writing code.
+
+| Task | Where | Docs |
+|------|-------|------|
 | Run any command in a ddev project | [ddev.md](references/ddev.md) | https://ddev.readthedocs.io/ |
 | Use a Symfony 7.4 feature (requires >= 7.4) | [whats-new-7.4.md](references/whats-new-7.4.md) | https://symfony.com/blog/symfony-7-4-curated-new-features |
 | Use a Symfony 8.1 feature (requires >= 8.1) | [whats-new-8.1.md](references/whats-new-8.1.md) | https://symfony.com/blog/symfony-8-1-curated-new-features |
 | Add a route / controller | [controllers-and-routing.md](references/controllers-and-routing.md) | https://symfony.com/doc/7.4/controller.html |
-| Add an entity / repository / migration | [doctrine.md](references/doctrine.md) | https://symfony.com/doc/7.4/doctrine.html |
-| Add a console command | [console-commands.md](references/console-commands.md) | https://symfony.com/doc/7.4/console.html |
-| Write a memory-safe import / batch command | [imports.md](references/imports.md) | https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/batch-processing.html |
-| Debug routes / services / config / DB, profile a command | [debugging.md](references/debugging.md) | — |
 | React to an event | [events.md](references/events.md) | https://symfony.com/doc/7.4/event_dispatcher.html |
-| Secure an endpoint / firewall / voter | [security.md](references/security.md) | https://symfony.com/doc/7.4/security.html |
-| Write a unit / functional / browser test | [testing.md](references/testing.md) | https://symfony.com/doc/7.4/testing.html |
+| Debug routes / services / config / DB, profile a command | [debugging.md](references/debugging.md) | — |
 | Configure the framework (`framework:` tree) | [framework-config.md](references/framework-config.md) | https://symfony.com/doc/current/reference/configuration/framework.html |
-| Validate input | [validator.md](references/validator.md) | https://symfony.com/doc/7.4/validation.html |
-| Send email | [mailer.md](references/mailer.md) | https://symfony.com/doc/7.4/mailer.html |
-| Send notification (chat/SMS/push) | [notifier.md](references/notifier.md) | https://symfony.com/doc/7.4/notifier.html |
-| Run background / queued work | [messenger.md](references/messenger.md) | https://symfony.com/doc/7.4/messenger.html |
-| Add/route a message + handler (flush ownership, sync vs async) | [messenger.md](references/messenger.md) | https://symfony.com/doc/7.4/messenger.html |
-| Schedule recurring work | [scheduler.md](references/scheduler.md) | https://symfony.com/doc/7.4/scheduler.html |
-| Make HTTP calls outbound | [http-client.md](references/http-client.md) | https://symfony.com/doc/7.4/http_client.html |
-| Cache expensive work | [cache.md](references/cache.md) | https://symfony.com/doc/7.4/cache.html |
-| Acquire a lock | [lock.md](references/lock.md) | https://symfony.com/doc/7.4/lock.html |
-| Rate-limit something | [rate-limiter.md](references/rate-limiter.md) | https://symfony.com/doc/7.4/rate_limiter.html |
-| Model a state machine | [workflow.md](references/workflow.md) | https://symfony.com/doc/7.4/workflow.html |
-| Serialize/deserialize | [serializer.md](references/serializer.md) | https://symfony.com/doc/7.4/serializer.html |
-| Run an external process | [process.md](references/process.md) | https://symfony.com/doc/7.4/components/process.html |
-| Walk files / find files | [finder.md](references/finder.md) | https://symfony.com/doc/7.4/components/finder.html |
-| Filesystem operations | [filesystem.md](references/filesystem.md) | https://symfony.com/doc/7.4/components/filesystem.html |
-| String manipulation / slugs | [string.md](references/string.md) | https://symfony.com/doc/7.4/components/string.html |
-| Generate UUIDs / ULIDs | [uid.md](references/uid.md) | https://symfony.com/doc/7.4/components/uid.html |
-| Get "now" testably | [clock.md](references/clock.md) | https://symfony.com/doc/7.4/components/clock.html |
-| Sanitize user-submitted HTML | [html-sanitizer.md](references/html-sanitizer.md) | https://symfony.com/doc/7.4/html_sanitizer.html |
+| Add an entity / repository / migration | `symfony-doctrine` skill | https://symfony.com/doc/7.4/doctrine.html |
+| Write a memory-safe import / batch command | `symfony-doctrine` skill (`references/imports.md`) | https://www.doctrine-project.org/projects/doctrine-orm/en/current/reference/batch-processing.html |
+| Add a console command | `symfony-console` skill | https://symfony.com/doc/7.4/console.html |
+| Secure an endpoint / firewall / voter | `symfony-security` skill | https://symfony.com/doc/7.4/security.html |
+| Write a unit / functional / browser test | `symfony-testing` skill | https://symfony.com/doc/7.4/testing.html |
+| Validate input | `symfony-validator` skill | https://symfony.com/doc/7.4/validation.html |
+| Send email | `symfony-mailer` skill | https://symfony.com/doc/7.4/mailer.html |
+| Send notification (chat/SMS/push) | `symfony-notifier` skill | https://symfony.com/doc/7.4/notifier.html |
+| Run background / queued work | `symfony-messenger` skill | https://symfony.com/doc/7.4/messenger.html |
+| Add/route a message + handler (flush ownership, sync vs async) | `symfony-messenger` skill | https://symfony.com/doc/7.4/messenger.html |
+| Schedule recurring work | `symfony-scheduler` skill | https://symfony.com/doc/7.4/scheduler.html |
+| Make HTTP calls outbound | `symfony-http-client` skill | https://symfony.com/doc/7.4/http_client.html |
+| Cache expensive work | `symfony-cache` skill | https://symfony.com/doc/7.4/cache.html |
+| Acquire a lock | `symfony-lock` skill | https://symfony.com/doc/7.4/lock.html |
+| Rate-limit something | `symfony-rate-limiter` skill | https://symfony.com/doc/7.4/rate_limiter.html |
+| Model a state machine | `symfony-workflow` skill | https://symfony.com/doc/7.4/workflow.html |
+| Serialize/deserialize | `symfony-serializer` skill | https://symfony.com/doc/7.4/serializer.html |
+| Run an external process | `symfony-process` skill | https://symfony.com/doc/7.4/components/process.html |
+| Walk files / find files | `symfony-finder` skill | https://symfony.com/doc/7.4/components/finder.html |
+| Filesystem operations | `symfony-filesystem` skill | https://symfony.com/doc/7.4/components/filesystem.html |
+| String manipulation / slugs | `symfony-string` skill | https://symfony.com/doc/7.4/components/string.html |
+| Generate UUIDs / ULIDs | `symfony-uid` skill | https://symfony.com/doc/7.4/components/uid.html |
+| Get "now" testably | `symfony-clock` skill | https://symfony.com/doc/7.4/components/clock.html |
+| Sanitize user-submitted HTML | `symfony-html-sanitizer` skill | https://symfony.com/doc/7.4/html_sanitizer.html |
 | Build a form | — | https://symfony.com/doc/7.4/forms.html |
 | Render with Twig | — | https://symfony.com/doc/7.4/templates.html |
 | Translate strings | — | https://symfony.com/doc/7.4/translation.html |
@@ -125,73 +134,73 @@ For details, see [`references/project-layout.md`](references/project-layout.md).
 Quick scan of Symfony components grouped by problem area. Use this when
 deciding between a Symfony component and a third-party library — for any
 row whose "Replaces" column matches what you're about to reach for, use
-the Symfony component.
+the Symfony component (and read its skill).
 
 ### Network / I/O
 
-| Component | Replaces | Reference |
-|-----------|----------|-----------|
-| `symfony/http-client` | Guzzle, curl wrappers, file_get_contents for HTTP | [http-client.md](references/http-client.md) |
-| `symfony/mailer` | PHPMailer, SwiftMailer, vendor SMTP SDKs | [mailer.md](references/mailer.md) |
-| `symfony/notifier` | Twilio/Slack/Discord/Telegram SDKs for notifications | [notifier.md](references/notifier.md) |
+| Component | Replaces | Skill |
+|-----------|----------|-------|
+| `symfony/http-client` | Guzzle, curl wrappers, file_get_contents for HTTP | `symfony-http-client` |
+| `symfony/mailer` | PHPMailer, SwiftMailer, vendor SMTP SDKs | `symfony-mailer` |
+| `symfony/notifier` | Twilio/Slack/Discord/Telegram SDKs for notifications | `symfony-notifier` |
 | `symfony/mime` | nesbot/MIME builders, custom MIME assembly | — |
 
 ### Data & state
 
-| Component | Replaces | Reference |
-|-----------|----------|-----------|
-| `symfony/cache` | Direct Redis/Memcached/APCu clients | [cache.md](references/cache.md) |
-| `symfony/lock` | Redis SETNX wrappers, flock helpers, custom mutexes | [lock.md](references/lock.md) |
+| Component | Replaces | Skill |
+|-----------|----------|-------|
+| `symfony/cache` | Direct Redis/Memcached/APCu clients | `symfony-cache` |
+| `symfony/lock` | Redis SETNX wrappers, flock helpers, custom mutexes | `symfony-lock` |
 | `symfony/semaphore` | Hand-rolled concurrency limits | — |
-| `symfony/rate-limiter` | Hand-rolled rate limit code, third-party limiters | [rate-limiter.md](references/rate-limiter.md) |
-| `symfony/messenger` | php-amqplib direct use, vendor queue SDKs | [messenger.md](references/messenger.md) |
-| `symfony/scheduler` | Cron-based packages, hand-rolled scheduling | [scheduler.md](references/scheduler.md) |
-| `symfony/workflow` | Hand-rolled state machines | [workflow.md](references/workflow.md) |
+| `symfony/rate-limiter` | Hand-rolled rate limit code, third-party limiters | `symfony-rate-limiter` |
+| `symfony/messenger` | php-amqplib direct use, vendor queue SDKs | `symfony-messenger` |
+| `symfony/scheduler` | Cron-based packages, hand-rolled scheduling | `symfony-scheduler` |
+| `symfony/workflow` | Hand-rolled state machines | `symfony-workflow` |
 
 ### Filesystem & process
 
-| Component | Replaces | Reference |
-|-----------|----------|-----------|
-| `symfony/filesystem` | Raw `mkdir`, `rename`, `copy`, `unlink` | [filesystem.md](references/filesystem.md) |
-| `symfony/finder` | `glob`, `scandir`, `RecursiveIteratorIterator` | [finder.md](references/finder.md) |
-| `symfony/process` | `exec`, `shell_exec`, `proc_open` | [process.md](references/process.md) |
+| Component | Replaces | Skill |
+|-----------|----------|-------|
+| `symfony/filesystem` | Raw `mkdir`, `rename`, `copy`, `unlink` | `symfony-filesystem` |
+| `symfony/finder` | `glob`, `scandir`, `RecursiveIteratorIterator` | `symfony-finder` |
+| `symfony/process` | `exec`, `shell_exec`, `proc_open` | `symfony-process` |
 
 ### Data transformation & validation
 
-| Component | Replaces | Reference |
-|-----------|----------|-----------|
-| `symfony/serializer` | JMS Serializer, hand-rolled (de)serialization | [serializer.md](references/serializer.md) |
-| `symfony/validator` | Hand-rolled validation, respect/validation | [validator.md](references/validator.md) |
-| `symfony/string` | Ad-hoc `mb_*` usage, custom slug functions | [string.md](references/string.md) |
-| `symfony/uid` | `ramsey/uuid` for most cases | [uid.md](references/uid.md) |
-| `symfony/html-sanitizer` | HTMLPurifier | [html-sanitizer.md](references/html-sanitizer.md) |
-| `symfony/clock` | Direct `new \DateTimeImmutable()` (for testability) | [clock.md](references/clock.md) |
+| Component | Replaces | Skill |
+|-----------|----------|-------|
+| `symfony/serializer` | JMS Serializer, hand-rolled (de)serialization | `symfony-serializer` |
+| `symfony/validator` | Hand-rolled validation, respect/validation | `symfony-validator` |
+| `symfony/string` | Ad-hoc `mb_*` usage, custom slug functions | `symfony-string` |
+| `symfony/uid` | `ramsey/uuid` for most cases | `symfony-uid` |
+| `symfony/html-sanitizer` | HTMLPurifier | `symfony-html-sanitizer` |
+| `symfony/clock` | Direct `new \DateTimeImmutable()` (for testability) | `symfony-clock` |
 | `symfony/expression-language` | `eval`, custom rule DSLs | — |
 
 ### HTTP / framework essentials
 
 Already idiomatic when working in Symfony — listed for completeness, no
-reference files needed.
+companion skill needed.
 
-`symfony/http-foundation`, `symfony/routing`, `symfony/security-bundle`,
-`symfony/form`, `symfony/twig-bundle`, `symfony/translation`,
-`symfony/console`, `symfony/dependency-injection`,
-`symfony/event-dispatcher`, `symfony/yaml`, `symfony/config`,
-`symfony/runtime`, `symfony/asset`, `symfony/asset-mapper`,
-`symfony/web-link`.
+`symfony/http-foundation`, `symfony/routing`, `symfony/security-bundle`
+(see `symfony-security`), `symfony/form`, `symfony/twig-bundle`,
+`symfony/translation`, `symfony/console` (see `symfony-console`),
+`symfony/dependency-injection`, `symfony/event-dispatcher`,
+`symfony/yaml`, `symfony/config`, `symfony/runtime`, `symfony/asset`,
+`symfony/asset-mapper`, `symfony/web-link`.
 
 ### Testing / crawling
 
 `symfony/panther`, `symfony/dom-crawler`, `symfony/browser-kit`,
-`symfony/css-selector`. See [testing.md](references/testing.md).
+`symfony/css-selector`. See the `symfony-testing` skill.
 
 ## 4. Decision rule
 
 When picking an approach:
 
 1. **Task-shaped work** (routes, entities, console commands, events,
-   security, tests, config) — open the matching task reference and follow
-   its patterns. Don't invent a new convention.
+   security, tests, config) — open the matching reference or companion
+   skill and follow its patterns. Don't invent a new convention.
 2. **Component choice** — before `composer require`-ing a third-party
    library, check the catalog above. If a Symfony component covers the
    use case, use it; only fall back to a third-party library when the
@@ -199,9 +208,9 @@ When picking an approach:
 3. **Configuration** — for any `framework:` key, consult
    [framework-config.md](references/framework-config.md) before
    guessing the option name or value.
-4. **All examples target Symfony 7.4.** Patterns from older versions
-   (`MessageHandlerInterface`, route YAML when attributes work, public
-   service ids) are out of scope.
+4. **All examples target Symfony 7.4, 8.0 and newer.** Patterns from older
+   versions (`MessageHandlerInterface`, route YAML when attributes work,
+   public service ids) are out of scope.
 5. **Version-gated features** — anything from
    [whats-new-7.4.md](references/whats-new-7.4.md) or
    [whats-new-8.1.md](references/whats-new-8.1.md) requires the version

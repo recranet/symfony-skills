@@ -1,50 +1,69 @@
 # symfony-skills
 
-A Claude Code skill for Symfony 7.4+. Keeps Claude on idiomatic patterns —
+Claude Code skills for Symfony 7.4, 8.0 or newer. Keeps Claude on idiomatic patterns —
 routing, doctrine, security, console, events, testing, framework config —
 and reaching for first-party components instead of vendor libraries.
 
 ## What's included
 
-The skill lives under `symfony/` (a named skill directory, so `npx skills`
-bundles `SKILL.md` together with everything in `references/`).
+This repo is a **skill family**: a core `symfony/` skill for cross-cutting
+concerns, plus one `symfony-<component>/` skill per Symfony component. Each
+directory is a named skill (`SKILL.md`, optionally with `references/`), so
+`npx skills` can bundle them individually or all together.
 
-- **`symfony/SKILL.md`** — always-loaded entry point. Tooling conventions (ddev
-  when present), project layout summary, a task index pointing at the right
-  reference for each common job, and a catalog of ~40 components grouped by
-  problem area.
+### Core skill
 
-- **`symfony/references/`** — on-demand reference docs:
-
-  **Task-oriented** (broad Symfony work):
+- **`symfony/`** — the hub. Tooling conventions (ddev when present), version
+  gating, project layout, a task index routing every common job to the right
+  reference or companion skill, and a catalog of ~40 components grouped by
+  problem area. On-demand references:
   - `project-layout.md` — directory layout, tooling, autowiring conventions
   - `controllers-and-routing.md` — `#[Route]`, `#[MapRequestPayload]`, `#[MapEntity]`
-  - `doctrine.md` — entities, migrations, repositories, query patterns
-  - `security.md` — firewalls, authenticators, voters, password hashing
-  - `console-commands.md` — `#[AsCommand]`, input/options, `SymfonyStyle`
-  - `imports.md` — memory-safe imports: ID-first loops, per-iteration `clear()`, DBAL side effects, sync-dispatched side effects (outbox as escape hatch)
   - `events.md` — `#[AsEventListener]`, kernel events, custom events
-  - `testing.md` — `KernelTestCase`, `WebTestCase`, Panther
   - `framework-config.md` — the full `framework:` config tree
+  - `debugging.md` — debug commands, profiling
+  - `ddev.md` — running everything through ddev, Mailpit, xhprof/XHGui
+  - `whats-new-7.4.md` / `whats-new-8.1.md` — version-gated features
 
-  **Version-gated** (only when the installed Symfony version allows):
-  - `whats-new-7.4.md` — curated Symfony 7.4 features (requires >= 7.4)
-  - `whats-new-8.1.md` — curated Symfony 8.1 features (requires >= 8.1)
+### Component skills
 
-  **Component-oriented** (Symfony component over vendor lib):
-  `lock`, `http-client`, `cache`, `mailer`, `messenger`, `notifier`,
-  `process`, `filesystem`, `finder`, `serializer`, `validator`,
-  `rate-limiter`, `scheduler`, `workflow`, `string`, `uid`, `clock`,
-  `html-sanitizer`.
+One skill per component, grouped by Symfony component. Each contains the
+full when-to-use / install / minimal example / patterns / gotchas guidance:
 
-Each reference file follows the same shape: when to use, what you need,
-minimal example, common patterns, gotchas, links to the official 7.4 docs.
+| Skill | Covers |
+|-------|--------|
+| `symfony-doctrine` | Entities, repositories, migrations, query patterns; `references/imports.md` for memory-safe batch imports |
+| `symfony-console` | `#[AsCommand]`, input/options, `SymfonyStyle` |
+| `symfony-security` | Firewalls, authenticators, voters, password hashing |
+| `symfony-testing` | `KernelTestCase`, `WebTestCase`, Panther |
+| `symfony-messenger` | Messages, handlers, transports, routing conventions, flush ownership |
+| `symfony-scheduler` | `#[AsPeriodicTask]` / `#[AsCronTask]`, schedules |
+| `symfony-http-client` | Outbound HTTP, retries, scoped clients, `MockHttpClient` |
+| `symfony-mailer` | Email, transports, Mailpit in dev |
+| `symfony-notifier` | Chat / SMS / push notifications |
+| `symfony-cache` | Pools, cache contracts, Redis/Memcached/APCu |
+| `symfony-lock` | Mutexes, TTLs, blocking acquire |
+| `symfony-rate-limiter` | Token bucket, windows, reservations |
+| `symfony-workflow` | State machines, transitions, guards |
+| `symfony-serializer` | Normalizers, groups, DTO mapping |
+| `symfony-validator` | Constraint attributes, custom constraints |
+| `symfony-string` | `UnicodeString`, slugger |
+| `symfony-uid` | UUIDs / ULIDs, Doctrine types |
+| `symfony-clock` | Testable time, `MockClock` |
+| `symfony-html-sanitizer` | Sanitizing user-submitted HTML |
+| `symfony-process` | Running external processes |
+| `symfony-finder` | Finding / iterating files |
+| `symfony-filesystem` | Filesystem operations, atomic writes |
+
+Each skill follows the same shape: when to use, what you need, minimal
+example, common patterns, gotchas, links to the official Symfony docs.
 
 ## Requirements
 
-- Symfony 7.4 or higher. The skill activates when Claude detects a Symfony
+- Symfony 7.4 or higher. The skills activate when Claude detects a Symfony
   project (composer.json requires `symfony/framework-bundle` at ^7.4, or
-  the repo has `bin/console` and `config/packages/`).
+  the repo has `bin/console` and `config/packages/`) and the task matches
+  a skill's domain.
 - Claude Code with skill support.
 
 ## Tooling — ddev when present
@@ -52,7 +71,8 @@ minimal example, common patterns, gotchas, links to the official 7.4 docs.
 If the project has a `.ddev/config.yaml`, Claude will prefix shell commands
 with `ddev` (e.g., `ddev php bin/console make:migration`,
 `ddev composer require lock`). Without ddev, commands run directly on the
-host.
+host. Every component skill carries this convention; the full mapping lives
+in `symfony/references/ddev.md`.
 
 ## Installation
 
@@ -69,13 +89,14 @@ git clone https://github.com/recranet/symfony-skills.git
 npx skills add ./symfony-skills
 ```
 
-This copies the skill (the `symfony/` directory — `SKILL.md` plus all of
-`references/`) into your local agent environment. Restart Claude Code or run
-`/skill reload` to pick it up.
+This copies the skills into your local agent environment. Install everything
+for full coverage, or cherry-pick the component skills you need — the core
+`symfony/` skill is recommended in all cases since it routes tasks to the
+others. Restart Claude Code or run `/skill reload` to pick them up.
 
 ## Verifying it's active
 
-Open a Symfony 7.4 project in Claude Code and try one of these:
+Open a Symfony 7.4 or 8.0 project in Claude Code and try one of these:
 
 - "Add a controller for `GET /health` that returns `{"ok": true}`" — Claude
   should reach for `#[Route]` and `AbstractController::json()`.
@@ -89,15 +110,18 @@ Open a Symfony 7.4 project in Claude Code and try one of these:
 
 ## Contributing
 
-To add or improve a reference:
+To add or improve guidance:
 
-1. If a new task/component, add a row to `SKILL.md` (task index or component
-   catalog).
-2. Create `symfony/references/<name>.md` following the existing template (when to use /
-   what you need / minimal example / common patterns / gotchas / docs links).
+1. For a new component, create `symfony-<component>/SKILL.md` following the
+   existing template (frontmatter with a triggering-oriented description,
+   then when to use / what you need / minimal example / common patterns /
+   gotchas / docs links), and add it to the task index and component
+   catalog in `symfony/SKILL.md`.
+2. For cross-cutting guidance, edit or add a reference under
+   `symfony/references/`.
 3. Open a PR.
 
-To update existing guidance, edit the reference file directly.
+To update existing guidance, edit the skill or reference file directly.
 
 ## License
 
