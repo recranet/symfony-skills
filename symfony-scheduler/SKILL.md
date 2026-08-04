@@ -1,6 +1,6 @@
 ---
 name: symfony-scheduler
-description: Recurring work with symfony/scheduler - #[AsPeriodicTask] and #[AsCronTask], schedules, Messenger integration. Use whenever a Symfony task should run on an interval or cron expression, even if the user asks for a crontab entry.
+description: "Recurring work with symfony/scheduler - #[AsPeriodicTask] and #[AsCronTask], schedules, Messenger integration. Use whenever a Symfony task should run on an interval or cron expression, even if the user asks for a crontab entry."
 ---
 
 # symfony/scheduler

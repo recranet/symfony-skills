@@ -1,6 +1,6 @@
 ---
 name: symfony-console
-description: Console commands with symfony/console - #[AsCommand], arguments and options, SymfonyStyle, exit codes, CommandTester. Use whenever creating or editing a CLI command, bin/console task, cron entrypoint, or backfill script in a Symfony project.
+description: "Console commands with symfony/console - #[AsCommand], arguments and options, SymfonyStyle, exit codes, CommandTester. Use whenever creating or editing a CLI command, bin/console task, cron entrypoint, or backfill script in a Symfony project."
 ---
 
 # Console commands

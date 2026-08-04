@@ -1,6 +1,6 @@
 ---
 name: symfony-security
-description: Symfony security - firewalls, authenticators, voters, access control, password hashing, #[IsGranted]. Use for any authentication or authorization task in a Symfony project - login, API tokens, roles, permissions, securing endpoints or routes.
+description: "Symfony security - firewalls, authenticators, voters, access control, password hashing, #[IsGranted]. Use for any authentication or authorization task in a Symfony project - login, API tokens, roles, permissions, securing endpoints or routes."
 ---
 
 # Security — firewalls, authenticators, voters
